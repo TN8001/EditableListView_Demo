@@ -1,0 +1,126 @@
+﻿<Window
+  x:Class="EditableListView_Demo.MainWindow"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:local="clr-namespace:EditableListView_Demo"
+  Title="EditableListView Demo"
+  Width="700"
+  Height="600"
+  SnapsToDevicePixels="True"
+  WindowStartupLocation="CenterScreen">
+
+  <Window.Resources>
+    <local:FileNameValidationRule x:Key="FileNameValidationRule" />
+    <local:AsteriskValidationRule x:Key="AsteriskValidationRule" />
+    <Style TargetType="GridViewColumnHeader">
+      <Setter Property="HorizontalContentAlignment" Value="Left" />
+    </Style>
+  </Window.Resources>
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition />
+    </Grid.RowDefinitions>
+    <Expander Header="説明（＾ボタンでたためます）" IsExpanded="True">
+      <TextBlock Margin="5" TextWrapping="Wrap">
+        データは架空です（このサンプルではファイルをいじることはありません）
+        <LineBreak />
+        <LineBreak />
+        エクスプローラ右側を詳細モードにした様なものを想定してください
+        <LineBreak />
+        「名前」「＊」「コメント」が編集可能です（行を選択してもう一度クリック）
+        <LineBreak />
+        ダブルクリックは起動を模したメッセージボックスが出ます
+        <LineBreak />
+        UpdateSourceTriggerはLostFocus状態です（実データの反映タイミングを確認してください）
+        <LineBreak />
+        列ごとにバリデーションが設定できます（「名前」はファイル名に使えない文字 「＊」は*だけ 「コメント」は何もなし）
+        <LineBreak />
+        [Enter]キー[F3]キーで編集終了 [Esc]キーで編集キャンセル
+        <LineBreak />
+        <LineBreak />
+        注意事項（今のところ仕様とします）
+        <LineBreak />
+        ・フォーカスを奪わない部分のクリックや窓の移動で編集終了しない
+        <LineBreak />
+        ・ダブルクリック時一瞬編集モードになる
+        <LineBreak />
+        ・ソート等編集以外の機能はありません 各自実装してください
+      </TextBlock>
+    </Expander>
+    <CheckBox
+      Name="checkBox"
+      Margin="5"
+      HorizontalAlignment="Right"
+      VerticalAlignment="Top"
+      VerticalContentAlignment="Center"
+      Content="ダブルクリックを無視" />
+    <GroupBox Grid.Row="1" Header="実データの確認">
+      <StackPanel Orientation="Horizontal">
+        <TextBlock Margin="5,0" Text="名前" />
+        <TextBox
+          Width="200"
+          Margin="5,0"
+          Text="{Binding SelectedItem.Name, ElementName=listView}" />
+        <TextBlock Margin="5,0" Text="＊" />
+        <TextBox
+          Width="50"
+          Margin="5,0"
+          Text="{Binding SelectedItem.Star, ElementName=listView}" />
+        <TextBlock Margin="5,0" Text="コメント" />
+        <TextBox
+          Width="150"
+          Margin="5,0"
+          Text="{Binding SelectedItem.Comment, ElementName=listView}" />
+      </StackPanel>
+    </GroupBox>
+    <ListView
+      Name="listView"
+      Grid.Row="2"
+      Margin="5,5,5,5"
+      ItemsSource="{Binding Samples}">
+      <ListView.ItemContainerStyle>
+        <Style TargetType="{x:Type ListViewItem}">
+          <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick" />
+          <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+          <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        </Style>
+      </ListView.ItemContainerStyle>
+      <ListView.View>
+        <GridView>
+          <GridViewColumn Width="200" Header="名前">
+            <GridViewColumn.CellTemplate>
+              <DataTemplate>
+                <local:EditBox Text="{Binding Name}" ValidationRule="{StaticResource FileNameValidationRule}" />
+              </DataTemplate>
+            </GridViewColumn.CellTemplate>
+          </GridViewColumn>
+          <GridViewColumn DisplayMemberBinding="{Binding Date, StringFormat=yyyy/MM/dd hh:mm}" Header="作成日時" />
+          <GridViewColumn Header="サイズ">
+            <GridViewColumn.CellTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding Size}" TextAlignment="Right" />
+              </DataTemplate>
+            </GridViewColumn.CellTemplate>
+          </GridViewColumn>
+          <GridViewColumn Header="＊">
+            <GridViewColumn.CellTemplate>
+              <DataTemplate>
+                <local:EditBox Text="{Binding Star}" ValidationRule="{StaticResource AsteriskValidationRule}" />
+              </DataTemplate>
+            </GridViewColumn.CellTemplate>
+          </GridViewColumn>
+          <GridViewColumn Width="150" Header="コメント">
+            <GridViewColumn.CellTemplate>
+              <DataTemplate>
+                <local:EditBox Text="{Binding Comment}" />
+              </DataTemplate>
+            </GridViewColumn.CellTemplate>
+          </GridViewColumn>
+        </GridView>
+      </ListView.View>
+    </ListView>
+  </Grid>
+</Window>
