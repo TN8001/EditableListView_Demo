@@ -10,6 +10,7 @@
   WindowStartupLocation="CenterScreen">
 
   <Window.Resources>
+    <!--  適用するValidationRuleを用意  -->
     <local:FileNameValidationRule x:Key="FileNameValidationRule" />
     <local:AsteriskValidationRule x:Key="AsteriskValidationRule" />
     <Style TargetType="GridViewColumnHeader">
@@ -32,6 +33,8 @@
         <LineBreak />
         「名前」「＊」「コメント」が編集可能です（行を選択してもう一度クリック）
         <LineBreak />
+        エクスプローラと同様にクリックとダブルクリックの判別のため 編集開始までややラグが出ます
+        <LineBreak />
         ダブルクリックは起動を模したメッセージボックスが出ます
         <LineBreak />
         UpdateSourceTriggerはLostFocus状態です（実データの反映タイミングを確認してください）
@@ -44,8 +47,6 @@
         注意事項（今のところ仕様とします）
         <LineBreak />
         ・フォーカスを奪わない部分のクリックや窓の移動で編集終了しない
-        <LineBreak />
-        ・ダブルクリック時一瞬編集モードになる
         <LineBreak />
         ・ソート等編集以外の機能はありません 各自実装してください
       </TextBlock>
@@ -60,20 +61,24 @@
     <GroupBox Grid.Row="1" Header="実データの確認">
       <StackPanel Orientation="Horizontal">
         <TextBlock Margin="5,0" Text="名前" />
-        <TextBox
+        <!--  ベタ置き用の編集出来るTextBlock ダブルクリックで編集開始 スクロールで編集終了サポートなし  -->
+        <local:EditBlock
           Width="200"
           Margin="5,0"
-          Text="{Binding SelectedItem.Name, ElementName=listView}" />
+          Text="{Binding SelectedItem.Name, ElementName=listView}"
+          ValidationRule="{StaticResource FileNameValidationRule}" />
         <TextBlock Margin="5,0" Text="＊" />
-        <TextBox
-          Width="50"
+        <local:EditBlock
+          Width="80"
           Margin="5,0"
-          Text="{Binding SelectedItem.Star, ElementName=listView}" />
+          Text="{Binding SelectedItem.Star, ElementName=listView}"
+          ValidationRule="{StaticResource AsteriskValidationRule}" />
         <TextBlock Margin="5,0" Text="コメント" />
-        <TextBox
+        <local:EditBlock
           Width="150"
           Margin="5,0"
-          Text="{Binding SelectedItem.Comment, ElementName=listView}" />
+          Text="{Binding SelectedItem.Comment, ElementName=listView}"
+          ValidationRule="{StaticResource FileNameValidationRule}" />
       </StackPanel>
     </GroupBox>
     <ListView
@@ -93,7 +98,8 @@
           <GridViewColumn Width="200" Header="名前">
             <GridViewColumn.CellTemplate>
               <DataTemplate>
-                <local:EditBox Text="{Binding Name}" ValidationRule="{StaticResource FileNameValidationRule}" />
+                <!--  ListBox ListView専用の編集出来るTextBlock 選択後クリックで編集開始  -->
+                <local:ListEditBlock Text="{Binding Name}" ValidationRule="{StaticResource FileNameValidationRule}" />
               </DataTemplate>
             </GridViewColumn.CellTemplate>
           </GridViewColumn>
@@ -108,14 +114,14 @@
           <GridViewColumn Header="＊">
             <GridViewColumn.CellTemplate>
               <DataTemplate>
-                <local:EditBox Text="{Binding Star}" ValidationRule="{StaticResource AsteriskValidationRule}" />
+                <local:ListEditBlock Text="{Binding Star}" ValidationRule="{StaticResource AsteriskValidationRule}" />
               </DataTemplate>
             </GridViewColumn.CellTemplate>
           </GridViewColumn>
           <GridViewColumn Width="150" Header="コメント">
             <GridViewColumn.CellTemplate>
               <DataTemplate>
-                <local:EditBox Text="{Binding Comment}" />
+                <local:ListEditBlock Text="{Binding Comment}" />
               </DataTemplate>
             </GridViewColumn.CellTemplate>
           </GridViewColumn>
