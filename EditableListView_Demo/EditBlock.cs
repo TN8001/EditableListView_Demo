@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace EditableListView_Demo
 {
@@ -20,6 +22,7 @@ namespace EditableListView_Demo
 
         #region Text DependencyProperty 
         /// <summary>テキストを設定取得する DependencyProperty</summary>
+        [Description("この要素のテキスト内容を取得または設定します。"), Category("Common Properties")]
         public string Text { get => (string)GetValue(TextProperty); set => SetValue(TextProperty, value); }
         public static readonly DependencyProperty TextProperty
             = DependencyProperty.Register(nameof(Text), typeof(string), typeof(EditBlock),
@@ -27,6 +30,7 @@ namespace EditableListView_Demo
         #endregion
         #region IsEditing DependencyProperty 
         /// <summary>編集モードかどうかを設定取得する DependencyProperty</summary>
+        [Description("この要素を編集状態にするかどうかを示す値を取得または設定します。"), Category("Common Properties")]
         public bool IsEditing { get => (bool)GetValue(IsEditingProperty); set => SetValue(IsEditingProperty, value); }
         public static DependencyProperty IsEditingProperty
             = DependencyProperty.Register(nameof(IsEditing), typeof(bool), typeof(EditBlock),
@@ -45,7 +49,7 @@ namespace EditableListView_Demo
 
             if(value)
             {
-                var textBox = new TextBox() { Margin = new Thickness(-3, -1, 0, 0) };
+                var textBox = CreateTextBox();
                 textBox.SetBinding(TextBox.TextProperty, CreateBinding());
 
                 adorner = new EditBlockAdorner(textBlock, textBox);
@@ -69,6 +73,22 @@ namespace EditableListView_Demo
 
             NowEditing = value ? this : null;
         }
+
+        private TextBox CreateTextBox()
+        {
+            return new TextBox()
+            {
+                Margin = new Thickness(-3, -1, 0, 0),
+                FontFamily = this.FontFamily,
+                FontSize = this.FontSize,
+                FontStyle = this.FontStyle,
+                FontWeight = this.FontWeight,
+                FontStretch = this.FontStretch,
+                Foreground = this.Foreground,
+                // 何が正解か？？
+                Background = this.Background ?? new SolidColorBrush(Colors.White),
+            };
+        }
         #endregion
 
         #region InnerText internal DependencyProperty 
@@ -80,6 +100,7 @@ namespace EditableListView_Demo
         #endregion
 
         /// <summary>Textに掛けるバリデーションルール</summary>
+        [Description("テキストの編集時に掛けるバリデーションルールを取得または設定します。"), Category("Common Properties")]
         public ValidationRule ValidationRule { get; set; }
 
         // 編集中以外はnull
