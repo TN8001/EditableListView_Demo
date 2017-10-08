@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -14,11 +12,9 @@ namespace EditableListView_Demo
     /// <remarks>ListBox ListViewに最適化していないのでスクロール等で編集終了しない</remarks>  
     public class EditBlock : Control
     {
-        // 編集に入っているEditBlockの同定用
+        /// <summary>現在編集モードに入っているEditBlock</summary>
         protected static EditBlock NowEditing { get; private set; }
 
-        // バリデーションをつけたバインディングのキャッシュ
-        private static Dictionary<ValidationRule, Binding> bindingCache = new Dictionary<ValidationRule, Binding>();
         // イベント登録の重複を避ける集合
         private static HashSet<AdornerLayer> adornerLayerSet = new HashSet<AdornerLayer>();
 
@@ -41,19 +37,34 @@ namespace EditableListView_Demo
         {
             if(value && NowEditing != this) EndEdit();
 
-            // 最大幅設定
-            var adornerLayer = adorner.Parent as AdornerLayer;
-            var left = TranslatePoint(new Point(0, 0), adornerLayer).X;
-            var right = adornerLayer.ActualWidth;
-            // #pragma warning disable CS4014  抑制のための_ 意味はない
-            var _ = adorner.UpdateVisibilty(value, right - left);
+            var textBlock = GetTemplateChild("PART_TextBlock") as TextBlock;
+            var adornerLayer = AdornerLayer.GetAdornerLayer(textBlock);
+            if(adornerLayerSet.Add(adornerLayer))
+                WeakEventManager<AdornerLayer, SizeChangedEventArgs>
+                    .AddHandler(adornerLayer, "SizeChanged", (s, e) => EndEdit());
 
             if(value)
+            {
+                var textBox = new TextBox() { Margin = new Thickness(-3, -1, 0, 0) };
+                textBox.SetBinding(TextBox.TextProperty, CreateBinding());
+
+                adorner = new EditBlockAdorner(textBlock, textBox);
+                adornerLayer.Add(adorner);
+
+                // 最大幅設定
+                var left = TranslatePoint(new Point(0, 0), adornerLayer).X;
+                var right = adornerLayer.ActualWidth;
+                // #pragma warning disable CS4014  抑制のための_ 意味はない
+                var _ = adorner.UpdateVisibilty(value, right - left);
+
                 InnerText = Text;
+            }
             else
             {
                 Text = InnerText;
-                textBox.Text = InnerText;
+                var _ = adorner.UpdateVisibilty(value, 0);
+                adornerLayer.Remove(adorner);
+                adorner = null;
             }
 
             NowEditing = value ? this : null;
@@ -71,8 +82,8 @@ namespace EditableListView_Demo
         /// <summary>Textに掛けるバリデーションルール</summary>
         public ValidationRule ValidationRule { get; set; }
 
+        // 編集中以外はnull
         private EditBlockAdorner adorner;
-        private TextBox textBox;
 
         static EditBlock()
         {
@@ -83,6 +94,7 @@ namespace EditableListView_Demo
             DefaultStyleKeyProperty.OverrideMetadata(typeof(EditBlock), new FrameworkPropertyMetadata(typeof(EditBlock)));
         }
 
+        /// <summary>現在編集モードに入っているEditBlockの編集を終了</summary>
         public static void EndEdit()
         {
             if(NowEditing != null) NowEditing.IsEditing = false;
@@ -109,53 +121,6 @@ namespace EditableListView_Demo
             }
         }
 
-        public override void OnApplyTemplate()
-        {
-            if(DesignerProperties.GetIsInDesignMode(this)) return;
-            base.OnApplyTemplate();
-
-            var panel = GetTemplateChild("PART_Root") as Panel;
-            if(panel == null) throw new InvalidOperationException("not find PART_Root");
-
-            textBox = GetTemplateChild("PART_TextBox") as TextBox;
-            if(textBox == null) throw new InvalidOperationException("not find PART_TextBox");
-
-            var textBlock = GetTemplateChild("PART_TextBlock") as TextBlock;
-            if(textBlock == null) throw new InvalidOperationException("not find PART_TextBlock");
-
-            SetValidation();
-
-            // TextBoxをツリーから切り離しAdornerに付け替え
-            panel.Children.Remove(textBox);
-            adorner = new EditBlockAdorner(textBlock, textBox);
-            var adornerLayer = AdornerLayer.GetAdornerLayer(textBlock);
-            adornerLayer.Add(adorner);
-
-            // 既にイベント登録されていればスキップ
-            if(!adornerLayerSet.Add(adornerLayer)) return;
-
-            // イベント登録先はやや無駄があるが多様なパターンに対応できそうなAdornerLayerにしてみた
-            WeakEventManager<AdornerLayer, SizeChangedEventArgs>
-                .AddHandler(adornerLayer, "SizeChanged", (s, e) => EndEdit());
-        }
-
-        // バリデーションがあった場合はキャッシュしてバインディング張り直し
-        // Generic.xamlで済ませたかったがProxyやWrapperでかえってコードが増えたためやむなくこの仕様で
-        private void SetValidation()
-        {
-            if(ValidationRule == null) return;
-
-            if(!bindingCache.ContainsKey(ValidationRule))
-            {
-                var binding = CopyBinding(textBox, TextBox.TextProperty);
-                binding.ValidationRules.Add(ValidationRule);
-                bindingCache[ValidationRule] = binding;
-            }
-
-            textBox.SetBinding(TextBox.TextProperty, bindingCache[ValidationRule]);
-        }
-
-        // 編集開始
         protected override void OnMouseDoubleClick(MouseButtonEventArgs e)
         {
             base.OnMouseDoubleClick(e);
@@ -163,17 +128,19 @@ namespace EditableListView_Demo
             IsEditing = true;
         }
 
-        // 必要なところだけ 雑い
-        private static Binding CopyBinding(DependencyObject obj, DependencyProperty prop)
+        private Binding CreateBinding()
         {
-            var binding = BindingOperations.GetBinding(obj, prop);
-            return new Binding()
+            var binding = new Binding()
             {
-                Path = binding.Path,
-                RelativeSource = binding.RelativeSource,
-                Mode = binding.Mode,
-                UpdateSourceTrigger = binding.UpdateSourceTrigger
+                Path = new PropertyPath("InnerText"),
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
             };
+
+            if(ValidationRule != null)
+                binding.ValidationRules.Add(ValidationRule);
+
+            return binding;
         }
     }
 }

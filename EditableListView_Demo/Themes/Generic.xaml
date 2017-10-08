@@ -3,15 +3,10 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:local="clr-namespace:EditableListView_Demo">
 
-
   <!--
-    PART_Root PART_TextBlock PART_TextBoxは必須
-    実際はPART_TextBoxを切り離してEditBlock本体のAdornerに追加するので
-    Panelは無駄だが編集の楽さを優先
-    PART_TextBoxにはInnerTextをPropertyChangedでバインド(バリデーションのため)
+    PART_TextBlockは必須
     TextBlockにはTextをバインド(編集確定まで変化しない)
-    バリデーションは外部から与える仕様
-    バリデーションテンプレートは標準の赤枠タイプ カスタマイズした場合の挙動は未確認
+    バリデーションは外部から与える仕様 バリデーションテンプレートは標準の赤枠
   -->
   <Style x:Key="{x:Type local:EditBlock}" TargetType="{x:Type local:EditBlock}">
     <Setter Property="SnapsToDevicePixels" Value="True" />
@@ -24,13 +19,7 @@
             Background="{TemplateBinding Background}"
             BorderBrush="{TemplateBinding BorderBrush}"
             BorderThickness="{TemplateBinding BorderThickness}">
-            <Grid x:Name="PART_Root">
-              <TextBox
-                x:Name="PART_TextBox"
-                Margin="-3,-1,0,0"
-                Text="{Binding Path=InnerText, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource TemplatedParent}}" />
-              <TextBlock x:Name="PART_TextBlock" Text="{Binding Text, RelativeSource={RelativeSource TemplatedParent}}" />
-            </Grid>
+            <TextBlock x:Name="PART_TextBlock" Text="{Binding Text, RelativeSource={RelativeSource TemplatedParent}}" />
           </Border>
         </ControlTemplate>
       </Setter.Value>
@@ -49,13 +38,7 @@
             Background="{TemplateBinding Background}"
             BorderBrush="{TemplateBinding BorderBrush}"
             BorderThickness="{TemplateBinding BorderThickness}">
-            <Grid x:Name="PART_Root">
-              <TextBox
-                x:Name="PART_TextBox"
-                Margin="-3,-1,0,0"
-                Text="{Binding Path=InnerText, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource TemplatedParent}}" />
-              <TextBlock x:Name="PART_TextBlock" Text="{Binding Text, RelativeSource={RelativeSource TemplatedParent}}" />
-            </Grid>
+            <TextBlock x:Name="PART_TextBlock" Text="{Binding Text, RelativeSource={RelativeSource TemplatedParent}}" />
           </Border>
         </ControlTemplate>
       </Setter.Value>

@@ -39,14 +39,14 @@
         <LineBreak />
         UpdateSourceTriggerはLostFocus状態です（実データの反映タイミングを確認してください）
         <LineBreak />
-        列ごとにバリデーションが設定できます（「名前」はファイル名に使えない文字 「＊」は*だけ 「コメント」は何もなし）
+        列ごとにバリデーションが設定できます（「名前」はファイル名に使えない文字禁止 「＊」は*だけ 「コメント」は何もなし）
         <LineBreak />
         [Enter]キー[F3]キーで編集終了 [Esc]キーで編集キャンセル
         <LineBreak />
         <LineBreak />
         注意事項（今のところ仕様とします）
         <LineBreak />
-        ・フォーカスを奪わない部分のクリックや窓の移動で編集終了しない
+        ・フォーカスを奪わない部分のクリックや窓の移動で編集終了しない（使用側でEditBlock.EndEdit()を呼んでください）
         <LineBreak />
         ・ソート等編集以外の機能はありません 各自実装してください
       </TextBlock>
@@ -85,7 +85,8 @@
       Name="listView"
       Grid.Row="2"
       Margin="5,5,5,5"
-      ItemsSource="{Binding Samples}">
+      ItemsSource="{Binding Samples}"
+      VirtualizingStackPanel.VirtualizationMode="Recycling">
       <ListView.ItemContainerStyle>
         <Style TargetType="{x:Type ListViewItem}">
           <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick" />

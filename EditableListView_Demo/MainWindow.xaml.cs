@@ -14,7 +14,7 @@ namespace EditableListView_Demo
             InitializeComponent();
             DataContext = this;
 
-            AddSample(100);
+            AddSample(1000);
         }
 
         private void AddSample(int iteration)

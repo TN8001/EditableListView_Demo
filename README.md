@@ -8,7 +8,6 @@ ListViewのGridViewでセルを編集可能にする ListEditBlockコントロールの使用サンプル
 * 列ごとに異なるバリデーションを掛けられる
 * 編集を確定するまでバインドしたプロパティは変更しない
 * ListBoxでも使用可能
-* ベタ置き用にEditBlockコントロールの追加
 ## 使い方
 デモプロジェクトを参照のこと
 ## 顛末
@@ -43,6 +42,14 @@ Nugetとかにあればこんなクソコード公開せずに済むのですがw
 * データは架空です（このサンプルではファイルをいじることはありません）
 * カスタムコントロールですがテンプレートを変更するようなテストはしていません
 * 一切責任は持ちません
+## 更新履歴
+* 2017/9/21 ver1.0  
+* 2017/10/1 ver1.1  
+    * ベタ置き用にEditBlockコントロールの追加
+    * EditBlock追加のためクラス名調整
+* 2017/10/8 ver1.2
+    * VirtualizationMode="Recycling" 時にクラッシュしたので大幅見直し
+
 ## 謝辞
 [ViewModelKit.Fody Copyright (c) 2016-2017, Yves Goergen](http://unclassified.software/source/viewmodelkit)
 [MIT](https://github.com/ygoe/ViewModelKit/blob/master/LICENSE.txt)

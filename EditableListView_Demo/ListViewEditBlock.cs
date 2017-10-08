@@ -64,8 +64,8 @@ namespace EditableListView_Demo
                 if(scrollBar2 == null) throw new InvalidOperationException("not find ScrollViewer in HorizontalScrollBar");
             }
 
-            if(!listBoxSet.Add(listBox)) return;
             // 既に登録されていればスキップ
+            if(!listBoxSet.Add(listBox)) return;
 
             // 編集を終了させるイベント購読
             // エクスプローラでは何もないエリアのクリックや窓の移動でも編集終了するが
