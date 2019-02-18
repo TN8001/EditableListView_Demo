@@ -1,55 +1,57 @@
-# EditableListView_Demo
-![�A�v���X�N���[���V���b�g](https://github.com/TN8001/EditableListView_Demo/blob/master/AppImage.png)
-## �T�v
-ListView��GridView�ŃZ����ҏW�\�ɂ��� ListEditBlock�R���g���[���̎g�p�T���v��
-## ����
-* �o�������G�N�X�v���[���̏ڍ׃��[�h���C�N�ȑ��쐫
-* xaml���Ȃ�ׂ��V���v���ɂȂ�悤�ȊȕւȋL�q��
-* �񂲂ƂɈقȂ�o���f�[�V�������|������
-* �ҏW���m�肷��܂Ńo�C���h�����v���p�e�B�͕ύX���Ȃ�
-* ListBox�ł��g�p�\
-## �g����
-�f���v���W�F�N�g���Q�Ƃ̂���
-## �^��
-�����l�Ȃ��̂����x������Ă���̂ł��� �Ȃ��Ȃ��[���̂������̂ɂȂ炸�ɍ����Ă��܂�
+﻿# EditableListView_Demo
+![アプリスクリーンショット](https://github.com/TN8001/EditableListView_Demo/blob/master/AppImage.png)
+## 概要
+ListViewのGridViewでセルを編集可能にする ListEditBlockコントロールの使用サンプル
+## 特徴
+* 出来る限りエクスプローラの詳細モードライクな操作性
+* xamlがなるべくシンプルになるような簡便な記述性
+* 列ごとに異なるバリデーションを掛けられる
+* 編集を確定するまでバインドしたプロパティは変更しない
+* ListBoxでも使用可能
+## 使い方
+デモプロジェクトを参照のこと
+## 顛末
+同じ様なものを何度か作っているのですが なかなか納得のいくものにならずに困っています
 
-�~�����̂̓G�N�X�v���[���̏ڍ׃��[�h���Ȃ��̂Ȃ̂ł���
-DataGrid�x�[�X���Ɠ��삪�Ⴂ�����đ�ςȂ̂�
-ListView��ҏW�o����悤�ɂ�������ȒP���낤�Ǝv���܂�
+欲しいのはエクスプローラの詳細モード風なものなのですが
+DataGridベースだと動作が違いすぎて大変なので
+ListViewを編集出来るようにする方が簡単だろうと思います
 
-web��ɂ�������Ⴊ����܂��� �z�肪�Ⴄ���̂������Ƃقڈ�̌��l�^�ɂȂ�悤�ł�
+web上にいくつか作例がありますが 想定が違うものを除くとほぼ一つの元ネタになるようです
 
-[�������l�^](https://blogs.msdn.microsoft.com/atc_avalon_team/2006/03/13/editing-in-listview/)
+[多分元ネタ](https://blogs.msdn.microsoft.com/atc_avalon_team/2006/03/13/editing-in-listview/)
 
-[���l�^��ReSharper�������悤�Ȋ��� ���̂��g�p�Ⴊ�Ȃ�](https://github.com/Microsoft/WPF-Samples/tree/master/Sample%20Applications/ExpenseIt/EditBoxControlLibrary)
+[元ネタをReSharperかけたような感じ 何故か使用例がない](https://github.com/Microsoft/WPF-Samples/tree/master/Sample%20Applications/ExpenseIt/EditBoxControlLibrary)
 
-[���{��̃y�[�W](http://pro.art55.jp/?eid=908012)
+[日本語のページ](http://pro.art55.jp/?eid=908012)
 
-�ς��ƌ� �܂��������Ȃ��Ǝv���������ς胁�������[�N���܂�
-WPF��ItemsControl�͉��z���܂�肪��������ł�
+ぱっと見 まずそうだなぁと思ったらやっぱりメモリリークします
+WPFのItemsControlは仮想化まわりがやっかいです
 
-�����ƈ���č���WeakEvent���ȒP�ɂȂ�܂���**����**���[�N�͎������Ǝv���܂���
+当時と違って今はWeakEventも簡単になりまして**多分**リークは治ったと思いますｗ
 
-�F�X�������**����**�v���d�l�͂قږ������܂����i�܂����ۂɎg���ĂȂ��̂ł���ł����j
+色々手を入れて**私の**要求仕様はほぼ満たせました（まだ実際に使ってないのであれですが）
 
-�Ƃ�����EditableListView�̎��v�͍����Ǝv���̂ł����F����ǂ����Ă����ł��傤���H�H
-�Ƃ����̐̂Ɏ��삵�Ă���̂� ����Ƃ������Ă���̂�...
+というかEditableListViewの需要は高いと思うのですが皆さんどうしているんでしょうか？？
+とっくの昔に自作しているのか それとも買っているのか...
 
-Nuget�Ƃ��ɂ���΂���ȃN�\�R�[�h���J�����ɍςނ̂ł���w
-## ���C�Z���X
-[MIT](https://github.com/TN8001/EditableListView_Demo/blob/master/LICENSE)
-## ���ӎ���
-* �f�[�^�͉ˋ�ł��i���̃T���v���ł̓t�@�C���������邱�Ƃ͂���܂���j
-* �J�X�^���R���g���[���ł����e���v���[�g��ύX����悤�ȃe�X�g�͂��Ă��܂���
-* ��ؐӔC�͎����܂���
-## �X�V����
+Nugetとかにあればこんなクソコード公開せずに済むのですがw
+## ライセンス
+CC0 1.0 Universal
+
+[![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)](LICENSE)
+## 注意事項
+* データは架空です（このサンプルではファイルをいじることはありません）
+* カスタムコントロールですがテンプレートを変更するようなテストはしていません
+* 一切責任は持ちません
+## 更新履歴
 * 2017/9/21 ver1.0  
 * 2017/10/1 ver1.1  
-    * �x�^�u���p��EditBlock�R���g���[���̒ǉ�
-    * EditBlock�ǉ��̂��߃N���X������
+    * ベタ置き用にEditBlockコントロールの追加
+    * EditBlock追加のためクラス名調整
 * 2017/10/8 ver1.2
-    * VirtualizationMode="Recycling" ���ɃN���b�V�������̂ő啝������
+    * VirtualizationMode="Recycling" 時にクラッシュしたので大幅見直し
 
-## �ӎ�
+## 謝辞
 [ViewModelKit.Fody Copyright (c) 2016-2017, Yves Goergen](http://unclassified.software/source/viewmodelkit)
 [MIT](https://github.com/ygoe/ViewModelKit/blob/master/LICENSE.txt)

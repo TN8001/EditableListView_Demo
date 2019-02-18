@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("EditableListView_Demo")]
-[assembly: AssemblyCopyright("Copyright ©  2017 T.Naga")]
+[assembly: AssemblyCopyright("CC0 1.0 Universal")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
