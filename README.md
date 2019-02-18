@@ -1,5 +1,5 @@
 ﻿# EditableListView_Demo
-![アプリスクリーンショット](https://github.com/TN8001/EditableListView_Demo/blob/master/AppImage.png)
+![アプリスクリーンショット](AppImage.png)
 ## 概要
 ListViewのGridViewでセルを編集可能にする ListEditBlockコントロールの使用サンプル
 ## 特徴
